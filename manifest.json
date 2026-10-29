@@ -1,0 +1,32 @@
+{
+  "name": "NBA 2K27 Cap Breaker & Pro Build Architect",
+  "short_name": "2K27 Lab",
+  "description": "NBA 2K27 Season 2 (Patch 2.0) Cap Breaker Simulator (+1 to +28), 53-Badge & Animation Gate Matrix, Synergy Fuse (+1/+2 to Legend) & Token Loadout Planner.",
+  "id": "./index.html",
+  "start_url": "./index.html#tab=simulator",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#060911",
+  "theme_color": "#060911",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

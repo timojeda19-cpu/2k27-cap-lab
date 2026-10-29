@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NBA 2K27 Cap Breaker &amp; Pro Build Architect</title>
+<meta name="description" content="Offline NBA 2K27 Season 2 / Patch 2.0 lab: Cap Breaker Simulator (28 max, +5 per attribute), 53-badge threshold &amp; animation gate matrix, Synergy Fuse (+1/+2 to Legend) &amp; token loadout planner.">
+<meta name="theme-color" content="#060911">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="2K27 Lab">
+<meta name="format-detection" content="telephone=no">
+__MANIFEST_LINK__
+<link rel="icon" type="image/svg+xml" href="__ICON_HREF__">
+<link rel="apple-touch-icon" href="__TOUCH_HREF__">
+<style>__CSS__</style>
+</head>
+<body>
+<header class="top"><img src="__ICON_HREF__" alt=""><div class="brand"><b>2K27 <i>CAP ARCHITECT</i></b><span id="k-sub"></span></div><span class="ver"><span class="off"></span><span id="net">Offline-ready</span></span></header>
+<nav class="tabs" aria-label="Sections">
+ <a href="#tab=sim" data-t="sim"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Cap Breaker</a>
+ <a href="#tab=matrix" data-t="matrix"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Matrix</a>
+ <a href="#tab=loadout" data-t="loadout"><svg viewBox="0 0 24 24"><path d="M12 2l8.5 5v10L12 22l-8.5-5V7z"/><path d="M9 12l2 2 4-4"/></svg>Synergy</a>
+ <a href="#tab=builds" data-t="builds"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Builds</a>
+ <a href="#tab=passing" data-t="passing"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Passing</a>
+</nav>
+<main>
+<!-- SIMULATOR -->
+<section class="view" id="v-sim">
+ <div class="vh"><h1>Cap Breaker Simulator</h1><p>+1 per click · max +5 per attribute · 28 total. Gold boxes = the <span class="sweetkey"></span> 85–94 sweet spot where one breaker most often crosses a badge tier. <span class="lk">🔒</span> by a name = max it with MyPoints first. 🔒 in the ladder = hard cap.</p></div>
+ <div class="card" style="margin-bottom:12px"><h2>Load a build <span class="n">tap to load · edits are saved in the link</span></h2><div class="scrollx" id="presets"></div></div>
+ <div class="grid simgrid">
+  <div class="grid">
+   <div class="card"><h2>Body</h2>
+    <div class="grid g2">
+     <div><label class="f" for="p-pos">Position</label><select id="p-pos"><option>PG</option><option>SG</option><option>SF</option><option>PF</option><option>C</option></select></div>
+     <div><label class="f" for="p-h">Height</label><select id="p-h"></select></div>
+     <div><label class="f" for="p-wt">Weight (lb)</label><input type="number" id="p-wt" min="150" max="290"></div>
+     <div><label class="f" for="p-ws">Wingspan</label><select id="p-ws"></select></div>
+    </div>
+    <div class="note" id="body-note"></div>
+   </div>
+   <div class="card"><h2>Breakers <span class="n" id="cb-n"></span></h2>
+    <div class="row"><span class="big" id="cb-used"></span><span class="muted">/ <span id="cb-av"></span> available · <span id="cb-max">28</span> max</span></div>
+    <div class="meter" id="cb-meter"><i></i></div>
+    <div id="cb-src"></div>
+    <div id="cb-warn" class="empty-hide"></div>
+    <div class="row" style="margin-top:10px"><button class="btn s" id="cb-reset" type="button">Clear breakers</button><button class="btn s" id="cb-best" type="button">⚡ Auto-spend for max tiers</button></div>
+   </div>
+   <div class="card"><h2>Builder cost saved</h2><div class="kpis" id="save-k"></div><div class="small dim" style="margin-top:8px">Relative estimate: rating points above 85 cost far more in the MyPLAYER Builder, so we weight each point by its band (≤69 ×1, 70–84 ×2, 85–94 ×3, 95+ ×4). The real Builder cost depends on position/height/weight/wingspan.</div></div>
+  </div>
+  <div class="card"><h2>Attributes <span class="n">rating · cap breakers · gain ladder</span></h2><div id="attrs"></div>
+   <div class="small dim" style="margin-top:8px">Solid pips = ladder read from your in-game Builder. Dashed = estimate (low ratings gain +10–15, near the cap +1–2; never grows). Edit a rating by tapping its box.</div></div>
+  <div class="grid">
+   <div class="card"><h2>What your breakers unlock <span class="n" id="un-n"></span></h2><div id="unlocks" class="list"></div></div>
+   <div class="card"><h2>Takeovers <span class="n" id="tk-n"></span></h2><div id="tks"></div></div>
+   <div class="card"><h2>Share</h2><div class="row"><button class="btn p" id="b-link" type="button">Copy share link</button><button class="btn" id="b-card" type="button">Copy build card</button></div><div class="bcard" id="bcard" style="margin-top:10px"></div></div>
+  </div>
+ </div>
+</section>
+<!-- MATRIX -->
+<section class="view" id="v-matrix">
+ <div class="vh"><h1>Badge Threshold &amp; Animation Gate Matrix</h1><p>All 53 badges (Bronze / Silver / Gold / HOF thresholds, height limits, token costs) and LockerCodes animation gates, checked live against the build in the simulator.</p></div>
+ <div class="card" style="margin-bottom:12px">
+  <div class="seg" id="mx-mode"><button data-m="badges" class="on" type="button">Badges</button><button data-m="anims" type="button">Animations</button><button data-m="tk" type="button">Takeovers</button><button data-m="alias" type="button">Legacy names</button></div>
+  <input type="search" id="mx-q" placeholder="Search badge, player, attribute (e.g. curry, 3PT, contact)" style="margin-top:10px" aria-label="Search">
+  <div class="chips" id="mx-cat" style="margin-top:10px"></div>
+  <div class="chips" id="mx-st" style="margin-top:8px"></div>
+  <div class="small dim" id="mx-info" style="margin-top:8px"></div>
+ </div>
+ <div id="mx-out"></div>
+</section>
+<!-- LOADOUT -->
+<section class="view" id="v-loadout">
+ <div class="vh"><h1>Synergy Fuse &amp; Token Loadout Planner</h1><p>Fuse badges cost 0 tokens and gain +1/+2 tiers (the only way to Legend). Reactions get the same boost once their Fuse triggers enough times. Pools are per discipline; cap breakers add no tokens or slots.</p></div>
+ <div class="card" style="margin-bottom:12px"><div class="row"><div style="flex:1;min-width:220px"><label class="f" for="lo-b">Build</label><select id="lo-b"></select></div>
+  <div><label class="f">Mode</label><div class="seg" id="lo-mode"><button data-m="rec" type="button">Rec 5v5</button><button data-m="3s" type="button">3s / 3v3</button></div></div></div>
+  <div class="small muted" id="lo-why" style="margin-top:8px"></div></div>
+ <div class="grid logrid">
+  <div class="card"><h2>Badges by discipline <span class="n" id="lo-tot"></span></h2><div id="lo-disc"></div>
+   <div class="row"><button class="btn s p" id="lo-auto" type="button">⚡ Auto-fill best tiers within pools</button><button class="btn s" id="lo-reset" type="button">Reset to saved loadout</button><button class="btn s" id="lo-clear" type="button">Clear</button></div></div>
+  <div class="grid">
+   <div class="card"><h2>Synergy Fuse → Reaction <span class="n" id="fz-n"></span></h2>
+    <div class="grid g2" style="margin-bottom:8px"><div><label class="f" for="fz-p1">+1 slots unlocked (of 12)</label><input type="number" id="fz-p1" min="0" max="12"></div><div><label class="f" for="fz-p2">+2 slots unlocked (of 4)</label><input type="number" id="fz-p2" min="0" max="4"></div></div>
+    <div id="fz-rows"></div><button class="btn s" id="fz-add" type="button">+ Add Fuse pair</button>
+    <div class="note">Season 2 reset seasonal Synergy. The free track gives back 4 slots at levels 7, 15, 25 and 35. ✓ = pairing seen in a real Builder screenshot; others: confirm the Builder allows it.</div></div>
+   <div class="card"><h2>Takeovers <span class="n">5 slots · one per discipline</span></h2><div id="lo-tk"></div></div>
+   <div class="card"><h2>Loadout card</h2><div class="row"><button class="btn p" id="lo-copy" type="button">Copy loadout</button><button class="btn" id="lo-link" type="button">Copy share link</button></div><div class="bcard" id="lo-card" style="margin-top:10px"></div></div>
+  </div>
+ </div>
+</section>
+<!-- BUILDS -->
+<section class="view" id="v-builds">
+ <div class="vh"><h1>Builds</h1><p>Your six builds (from your screenshots) plus meta templates. "Template" sheets are illustrative starting points, not a single creator's exact numbers.</p></div>
+ <div class="chips" id="bf" style="margin-bottom:12px"></div>
+ <div class="grid g3" id="b-list"></div>
+</section>
+<!-- PASSING -->
+<section class="view" id="v-passing">
+ <div class="vh"><h1>Passing Settings &amp; Pass Styles</h1><p>Preset for long icon/flick passes to a teammate already down court, the new 2K27 no-look input, and every pass style by Pass Accuracy.</p></div>
+ <div class="grid g2" style="align-items:start">
+  <div class="card"><h2>Pass Target preset <span class="n">Controller Settings → Passing</span></h2>
+   <div class="dial"><div><small>Direction</small><b>85</b></div><div><small>Distance</small><b>10</b></div><div><small>Openness</small><b>5</b></div></div>
+   <div id="pass-set"></div></div>
+  <div class="grid">
+   <div class="card"><h2>Inputs <span class="n">PlayStation · Xbox</span></h2><div class="tw"><table class="tbl" id="pass-in"></table></div>
+    <div class="ok"><b>No-look pass:</b> hold <span class="kbd">R1</span>/<span class="kbd">RB</span> and flick the <b>right stick</b> toward the receiver. Flashy animations also need a fitting pass style, Pass Accuracy and a good passing angle.</div></div>
+   <div class="card"><h2>Pass styles <span class="n" id="ps-n"></span></h2><div id="pass-styles" class="list"></div></div>
+  </div>
+ </div>
+ <div class="card" style="margin-top:12px"><h2>Sources</h2><div class="srcs" id="srcs"></div></div>
+</section>
+<div class="small dim" style="text-align:center;margin:20px 0 4px" id="foot"></div>
+<div class="small dim" style="text-align:center">Fan-made tool, not affiliated with 2K. Data: NBA2KLab, LockerCodes, LGC, games.gg, 2K Newsroom/Support, named creators. Checked __CHECKED__.</div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const D = __DATA__;
+__JS__
+</script>
+__SW__
+</body>
+</html>
